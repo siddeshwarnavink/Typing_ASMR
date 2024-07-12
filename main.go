@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"math/rand"
 	"os"
 	"time"
 
@@ -31,7 +32,10 @@ func initializeOtoContext() {
 }
 
 func playSound() {
-	fileBytes, err := os.ReadFile("./sounds/keypress-1.mp3")
+	randomNumber := rand.Intn(3) + 1
+	soundFile := fmt.Sprintf("./sounds/sound-%d.mp3", randomNumber)
+  
+	fileBytes, err := os.ReadFile(soundFile)
 	if err != nil {
 		panic("Sound files are missing")
 	}
@@ -51,7 +55,7 @@ func playSound() {
 }
 
 func main() {
-  initializeOtoContext()
+	initializeOtoContext()
 
 	fmt.Println("Coding with ASMR is running. Press 'SHIFT+Q' to stop.")
 
@@ -61,7 +65,7 @@ func main() {
 	})
 
 	hook.Register(hook.KeyUp, []string{"A"}, func(e hook.Event) {
-		playSound()
+		go playSound()
 	})
 
 	s := hook.Start()
