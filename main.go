@@ -31,10 +31,19 @@ func initializeOtoContext() {
 	<-readyChan
 }
 
-func playSound() {
-	randomNumber := rand.Intn(3) + 1
-	soundFile := fmt.Sprintf("./sounds/sound-%d.mp3", randomNumber)
-  
+func playSound(e hook.Event) {
+	var soundFile string
+
+	switch e.Keycode {
+	case 57:
+		soundFile = "./sounds/space.mp3"
+	case 28:
+		soundFile = "./sounds/enter.mp3"
+	default:
+		randomNumber := rand.Intn(3) + 1
+		soundFile = fmt.Sprintf("./sounds/sound-%d.mp3", randomNumber)
+	}
+
 	fileBytes, err := os.ReadFile(soundFile)
 	if err != nil {
 		panic("Sound files are missing")
@@ -65,7 +74,7 @@ func main() {
 	})
 
 	hook.Register(hook.KeyUp, []string{"A"}, func(e hook.Event) {
-		go playSound()
+		go playSound(e)
 	})
 
 	s := hook.Start()
