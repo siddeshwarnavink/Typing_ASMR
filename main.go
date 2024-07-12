@@ -11,6 +11,25 @@ import (
 	hook "github.com/robotn/gohook"
 )
 
+var otoCtx *oto.Context
+
+func initializeOtoContext() {
+	op := &oto.NewContextOptions{
+		SampleRate:   44100,
+		ChannelCount: 2,
+		Format:       oto.FormatSignedInt16LE,
+	}
+
+	var err error
+	var readyChan <-chan struct{}
+	otoCtx, readyChan, err = oto.NewContext(op)
+	if err != nil {
+		panic("oto.NewContext failed: " + err.Error())
+	}
+
+	<-readyChan
+}
+
 func playSound() {
 	fileBytes, err := os.ReadFile("./sounds/keypress-1.mp3")
 	if err != nil {
@@ -24,18 +43,6 @@ func playSound() {
 		panic("mp3.NewDecoder failed: " + err.Error())
 	}
 
-	op := &oto.NewContextOptions{}
-	op.SampleRate = 44100
-	op.ChannelCount = 2
-	op.Format = oto.FormatSignedInt16LE
-
-	otoCtx, readyChan, err := oto.NewContext(op)
-	if err != nil {
-		panic("oto.NewContext failed: " + err.Error())
-	}
-
-	<-readyChan
-
 	player := otoCtx.NewPlayer(decodedMp3)
 	player.Play()
 	for player.IsPlaying() {
@@ -44,6 +51,8 @@ func playSound() {
 }
 
 func main() {
+  initializeOtoContext()
+
 	fmt.Println("Coding with ASMR is running. Press 'SHIFT+Q' to stop.")
 
 	hook.Register(hook.KeyDown, []string{"q", "shift"}, func(e hook.Event) {
