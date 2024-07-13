@@ -33,8 +33,6 @@ func initializeOtoContext() {
 func playSound(e hook.Event, startTime *time.Time, prevSoundFile *string) {
 	soundFile := GetSoundFile(e.Keycode, e.Rawcode, startTime, prevSoundFile)
 
-	fmt.Println(soundFile)
-
 	fileBytes, err := os.ReadFile(soundFile)
 	if err != nil {
 		panic("Sound files are missing")
@@ -63,7 +61,7 @@ func main() {
 
 	initializeOtoContext()
 
-	fmt.Println("Coding with ASMR is running. Press 'SHIFT+Q' to stop.")
+	fmt.Println("Typing ASMR is running. Press 'SHIFT+Q' to stop.")
 
 	hook.Register(hook.KeyDown, []string{"q", "shift"}, func(e hook.Event) {
 		fmt.Println("Goodbye")
