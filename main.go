@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"math/rand"
 	"os"
 	"time"
 
@@ -31,18 +30,10 @@ func initializeOtoContext() {
 	<-readyChan
 }
 
-func playSound(e hook.Event) {
-	var soundFile string
+func playSound(e hook.Event, startTime *time.Time, prevSoundFile *string) {
+	soundFile := GetSoundFile(e.Keycode, e.Rawcode, startTime, prevSoundFile)
 
-	switch e.Keycode {
-	case 57:
-		soundFile = "./sounds/space.mp3"
-	case 28:
-		soundFile = "./sounds/enter.mp3"
-	default:
-		randomNumber := rand.Intn(3) + 1
-		soundFile = fmt.Sprintf("./sounds/sound-%d.mp3", randomNumber)
-	}
+	fmt.Println(soundFile)
 
 	fileBytes, err := os.ReadFile(soundFile)
 	if err != nil {
@@ -58,12 +49,18 @@ func playSound(e hook.Event) {
 
 	player := otoCtx.NewPlayer(decodedMp3)
 	player.Play()
+
+	*startTime = time.Now()
+
 	for player.IsPlaying() {
 		time.Sleep(time.Millisecond)
 	}
 }
 
 func main() {
+	startTime := time.Now()
+	var prevSoundFile string
+
 	initializeOtoContext()
 
 	fmt.Println("Coding with ASMR is running. Press 'SHIFT+Q' to stop.")
@@ -74,7 +71,7 @@ func main() {
 	})
 
 	hook.Register(hook.KeyUp, []string{"A"}, func(e hook.Event) {
-		go playSound(e)
+		go playSound(e, &startTime, &prevSoundFile)
 	})
 
 	s := hook.Start()
