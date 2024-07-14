@@ -9,6 +9,14 @@ typing sucks when you’re trying to focus but the silence is deafening and musi
 ## Solution
 just use Typing ASMR! 
 
+## Installation
+just run the ```install.py``` to install it. if it didn't work. if it didn't work, deal with it by,
+
+1. restarting the terminal
+2. manually add the correct PATH
+
+thats all. good luck
+
 ## Features
 - it actually works
 - it's pretty cool
